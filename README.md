@@ -21,7 +21,7 @@ Download the code & place the `addons` folder in your project folder (`res://`)
 
 
 # Explanation of Variables
-
+![](https://i.imgur.com/AFDR7em.png)
 ## Tempo
 Set this to the song's BPM or Beats Per Minute
 
