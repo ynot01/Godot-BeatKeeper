@@ -1,4 +1,5 @@
 # Godot-BeatKeeper
+A plugin for Godot that adds a node that emits signals at beat intervals, meant for rhythm games
 - [Installation](#installation)
 - [Usage](#usage)
 - [Explanation of Variables](#explanation-of-variables)
