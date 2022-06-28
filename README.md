@@ -16,8 +16,9 @@ Download the code & place the `addons` folder in your project folder (`res://`)
 - Set the Tempo to your song's BPM 
 - Select which beat intervals you would like it to emit
 - Turn on [Audio Mode](#audio-mode) if you need it
-  - Signals will be emitted with a `number : int` that tells you how many times that beat interval has been done so far in the song
 - Call `play(float)` on the BeatKeeper node
+
+Signals will be emitted with a `number : int` that tells you how many times that beat interval has been done so far in the song
 
 
 # Explanation of Variables
