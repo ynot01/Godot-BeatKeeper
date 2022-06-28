@@ -1,5 +1,5 @@
 # Godot-BeatKeeper
-A plugin for Godot that adds a node that emits signals at beat intervals, meant for rhythm games
+A plugin for Godot that adds a node called BeatKeeper (child of AudioStreamPlayer) that emits signals at beat intervals. You can set offset negative so that the beats trigger earlier, so that the game's hit notes can "approach" before the beat actually happens.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Explanation of Variables](#explanation-of-variables)
