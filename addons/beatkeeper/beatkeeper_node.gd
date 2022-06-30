@@ -26,29 +26,29 @@ export var twelfth_beats : bool = false
 export var sixteenth_beats : bool = false
 
 
-signal whole_beat(number) # 1 beat
-signal half_beat(number) # 1/2 beat
-signal third_beat(number) # 1/3 beat
-signal quarter_beat(number) # 1/4 beat
-signal fifth_beat(number) # 1/5 beat
-signal sixth_beat(number) # 1/6 beat
-signal seventh_beat(number) # 1/7 beat
-signal eighth_beat(number) # 1/8 beat
-signal ninth_beat(number) # 1/9 beat
-signal twelfth_beat(number) # 1/12 beat
-signal sixteenth_beat(number) # 1/16 beat
+signal whole_beat(number, exact_msec) # 1 beat
+signal half_beat(number, exact_msec) # 1/2 beat
+signal third_beat(number, exact_msec) # 1/3 beat
+signal quarter_beat(number, exact_msec) # 1/4 beat
+signal fifth_beat(number, exact_msec) # 1/5 beat
+signal sixth_beat(number, exact_msec) # 1/6 beat
+signal seventh_beat(number, exact_msec) # 1/7 beat
+signal eighth_beat(number, exact_msec) # 1/8 beat
+signal ninth_beat(number, exact_msec) # 1/9 beat
+signal twelfth_beat(number, exact_msec) # 1/12 beat
+signal sixteenth_beat(number, exact_msec) # 1/16 beat
 
-signal whole_beat_audio(number) # 1 beat_audio
-signal half_beat_audio(number) # 1/2 beat_audio
-signal third_beat_audio(number) # 1/3 beat_audio
-signal quarter_beat_audio(number) # 1/4 beat_audio
-signal fifth_beat_audio(number) # 1/5 beat_audio
-signal sixth_beat_audio(number) # 1/6 beat_audio
-signal seventh_beat_audio(number) # 1/7 beat_audio
-signal eighth_beat_audio(number) # 1/8 beat_audio
-signal ninth_beat_audio(number) # 1/9 beat_audio
-signal twelfth_beat_audio(number) # 1/12 beat_audio
-signal sixteenth_beat_audio(number) # 1/16 beat_audio
+signal whole_beat_audio(number, exact_msec) # 1 beat_audio
+signal half_beat_audio(number, exact_msec) # 1/2 beat_audio
+signal third_beat_audio(number, exact_msec) # 1/3 beat_audio
+signal quarter_beat_audio(number, exact_msec) # 1/4 beat_audio
+signal fifth_beat_audio(number, exact_msec) # 1/5 beat_audio
+signal sixth_beat_audio(number, exact_msec) # 1/6 beat_audio
+signal seventh_beat_audio(number, exact_msec) # 1/7 beat_audio
+signal eighth_beat_audio(number, exact_msec) # 1/8 beat_audio
+signal ninth_beat_audio(number, exact_msec) # 1/9 beat_audio
+signal twelfth_beat_audio(number, exact_msec) # 1/12 beat_audio
+signal sixteenth_beat_audio(number, exact_msec) # 1/16 beat_audio
 
 
 var time_begin
@@ -90,125 +90,124 @@ func _process(_delta):
 func _physics_process(_delta):
 	if processing_mode == ProcessEnum.PHYSICS_PROCESS: run_process()
 
+func cur_ms():
+	return OS.get_ticks_msec() - time_begin / 1000.0
 
 func run_process():
 	if !playing: return
 	
 	var ms_between_beats = 60000.0 / Tempo
-	var cur_ms = OS.get_ticks_msec() - time_begin / 1000.0
 	var audio_delay = (AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()) * 1000
 	
-	if cur_ms > audio_count_whole_beat * ms_between_beats - audio_delay:
+	if cur_ms() >= audio_count_whole_beat * ms_between_beats - audio_delay:
 		audio_count_whole_beat += 1
 		if whole_beats and audio_mode:
-			emit_signal("whole_beat_audio", audio_count_whole_beat)
+			emit_signal("whole_beat_audio", audio_count_whole_beat, audio_count_whole_beat * ms_between_beats - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_half_beat * (ms_between_beats/2.0) - audio_delay:
+	if cur_ms() >= audio_count_half_beat * (ms_between_beats/2.0) - audio_delay:
 		audio_count_half_beat += 1
 		if half_beats and audio_mode:
-			emit_signal("half_beat_audio", audio_count_half_beat)
+			emit_signal("half_beat_audio", audio_count_half_beat, audio_count_whole_beat * (ms_between_beats/2.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_third_beat * (ms_between_beats/3.0) - audio_delay:
+	if cur_ms() >= audio_count_third_beat * (ms_between_beats/3.0) - audio_delay:
 		audio_count_third_beat += 1
 		if third_beats and audio_mode:
-			emit_signal("third_beat_audio", audio_count_third_beat)
+			emit_signal("third_beat_audio", audio_count_third_beat, audio_count_whole_beat * (ms_between_beats/3.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_quarter_beat * (ms_between_beats/4.0) - audio_delay:
+	if cur_ms() >= audio_count_quarter_beat * (ms_between_beats/4.0) - audio_delay:
 		audio_count_quarter_beat += 1
 		if quarter_beats and audio_mode:
-			emit_signal("quarter_beat_audio", audio_count_quarter_beat)
+			emit_signal("quarter_beat_audio", audio_count_quarter_beat, audio_count_whole_beat * (ms_between_beats/4.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_fifth_beat * (ms_between_beats/5.0) - audio_delay:
+	if cur_ms() >= audio_count_fifth_beat * (ms_between_beats/5.0) - audio_delay:
 		audio_count_fifth_beat += 1
 		if fifth_beats and audio_mode:
-			emit_signal("fifth_beat_audio", audio_count_fifth_beat)
+			emit_signal("fifth_beat_audio", audio_count_fifth_beat, audio_count_whole_beat * (ms_between_beats/5.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_sixth_beat * (ms_between_beats/6.0) - audio_delay:
+	if cur_ms() >= audio_count_sixth_beat * (ms_between_beats/6.0) - audio_delay:
 		audio_count_sixth_beat += 1
 		if sixth_beats and audio_mode:
-			emit_signal("sixth_beat_audio", audio_count_sixth_beat)
+			emit_signal("sixth_beat_audio", audio_count_sixth_beat, audio_count_whole_beat * (ms_between_beats/6.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_seventh_beat * (ms_between_beats/7.0) - audio_delay:
+	if cur_ms() >= audio_count_seventh_beat * (ms_between_beats/7.0) - audio_delay:
 		audio_count_seventh_beat += 1
 		if seventh_beats and audio_mode:
-			emit_signal("seventh_beat_audio", audio_count_seventh_beat)
+			emit_signal("seventh_beat_audio", audio_count_seventh_beat, audio_count_whole_beat * (ms_between_beats/7.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_eighth_beat * (ms_between_beats/8.0) - audio_delay:
+	if cur_ms() >= audio_count_eighth_beat * (ms_between_beats/8.0) - audio_delay:
 		audio_count_eighth_beat += 1
 		if eighth_beats and audio_mode:
-			emit_signal("eighth_beat_audio", audio_count_eighth_beat)
+			emit_signal("eighth_beat_audio", audio_count_eighth_beat, audio_count_whole_beat * (ms_between_beats/8.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_ninth_beat * (ms_between_beats/9.0) - audio_delay:
+	if cur_ms() >= audio_count_ninth_beat * (ms_between_beats/9.0) - audio_delay:
 		audio_count_ninth_beat += 1
 		if ninth_beats and audio_mode:
-			emit_signal("ninth_beat_audio", audio_count_ninth_beat)
+			emit_signal("ninth_beat_audio", audio_count_ninth_beat, audio_count_whole_beat * (ms_between_beats/9.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_twelfth_beat * (ms_between_beats/12.0) - audio_delay:
+	if cur_ms() >= audio_count_twelfth_beat * (ms_between_beats/12.0) - audio_delay:
 		audio_count_twelfth_beat += 1
 		if twelfth_beats and audio_mode:
-			emit_signal("twelfth_beat_audio", audio_count_twelfth_beat)
+			emit_signal("twelfth_beat_audio", audio_count_twelfth_beat, audio_count_whole_beat * (ms_between_beats/12.0) - audio_delay + time_begin)
 	
-	if cur_ms > audio_count_sixteenth_beat * (ms_between_beats/16.0) - audio_delay:
+	if cur_ms() >= audio_count_sixteenth_beat * (ms_between_beats/16.0) - audio_delay:
 		audio_count_sixteenth_beat += 1
 		if sixteenth_beats and audio_mode:
-			emit_signal("sixteenth_beat_audio", audio_count_sixteenth_beat)
+			emit_signal("sixteenth_beat_audio", audio_count_sixteenth_beat, audio_count_whole_beat * (ms_between_beats/16.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_whole_beat * ms_between_beats:
+	if cur_ms() >= count_whole_beat * ms_between_beats:
 		count_whole_beat += 1
 		if whole_beats:
-			emit_signal("whole_beat", count_whole_beat)
+			emit_signal("whole_beat", count_whole_beat, audio_count_whole_beat * ms_between_beats - audio_delay + time_begin)
 	
-	if cur_ms > count_half_beat * (ms_between_beats/2.0):
+	if cur_ms() >= count_half_beat * (ms_between_beats/2.0):
 		count_half_beat += 1
 		if half_beats:
-			emit_signal("half_beat", count_half_beat)
+			emit_signal("half_beat", count_half_beat, audio_count_whole_beat * (ms_between_beats/2.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_third_beat * (ms_between_beats/3.0):
+	if cur_ms() >= count_third_beat * (ms_between_beats/3.0):
 		count_third_beat += 1
 		if third_beats:
-			emit_signal("third_beat", count_third_beat)
+			emit_signal("third_beat", count_third_beat, audio_count_whole_beat * (ms_between_beats/3.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_quarter_beat * (ms_between_beats/4.0):
+	if cur_ms() >= count_quarter_beat * (ms_between_beats/4.0):
 		count_quarter_beat += 1
 		if quarter_beats:
-			emit_signal("quarter_beat", count_quarter_beat)
+			emit_signal("quarter_beat", count_quarter_beat, audio_count_whole_beat * (ms_between_beats/4.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_fifth_beat * (ms_between_beats/5.0):
+	if cur_ms() >= count_fifth_beat * (ms_between_beats/5.0):
 		count_fifth_beat += 1
 		if fifth_beats:
-			emit_signal("fifth_beat", count_fifth_beat)
+			emit_signal("fifth_beat", count_fifth_beat, audio_count_whole_beat * (ms_between_beats/5.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_sixth_beat * (ms_between_beats/6.0):
+	if cur_ms() >= count_sixth_beat * (ms_between_beats/6.0):
 		count_sixth_beat += 1
 		if sixth_beats:
-			emit_signal("sixth_beat", count_sixth_beat)
+			emit_signal("sixth_beat", count_sixth_beat, audio_count_whole_beat * (ms_between_beats/6.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_seventh_beat * (ms_between_beats/7.0):
+	if cur_ms() >= count_seventh_beat * (ms_between_beats/7.0):
 		count_seventh_beat += 1
 		if seventh_beats:
-			emit_signal("seventh_beat", count_seventh_beat)
+			emit_signal("seventh_beat", count_seventh_beat, audio_count_whole_beat * (ms_between_beats/7.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_eighth_beat * (ms_between_beats/8.0):
+	if cur_ms() >= count_eighth_beat * (ms_between_beats/8.0):
 		count_eighth_beat += 1
 		if eighth_beats:
-			emit_signal("eighth_beat", count_eighth_beat)
+			emit_signal("eighth_beat", count_eighth_beat, audio_count_whole_beat * (ms_between_beats/8.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_ninth_beat * (ms_between_beats/9.0):
+	if cur_ms() >= count_ninth_beat * (ms_between_beats/9.0):
 		count_ninth_beat += 1
 		if ninth_beats:
-			emit_signal("ninth_beat", count_ninth_beat)
+			emit_signal("ninth_beat", count_ninth_beat, audio_count_whole_beat * (ms_between_beats/9.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_twelfth_beat * (ms_between_beats/12.0):
+	if cur_ms() >= count_twelfth_beat * (ms_between_beats/12.0):
 		count_twelfth_beat += 1
 		if twelfth_beats:
-			emit_signal("twelfth_beat", count_twelfth_beat)
+			emit_signal("twelfth_beat", count_twelfth_beat, audio_count_whole_beat * (ms_between_beats/12.0) - audio_delay + time_begin)
 	
-	if cur_ms > count_sixteenth_beat * (ms_between_beats/16.0):
+	if cur_ms() >= count_sixteenth_beat * (ms_between_beats/16.0):
 		count_sixteenth_beat += 1
 		if sixteenth_beats:
-			emit_signal("sixteenth_beat", count_sixteenth_beat)
-	
-	# AUDIO MODE ----------------------------------------------------------------------
+			emit_signal("sixteenth_beat", count_sixteenth_beat, audio_count_whole_beat * (ms_between_beats/16.0) - audio_delay + time_begin)
 
 
 
